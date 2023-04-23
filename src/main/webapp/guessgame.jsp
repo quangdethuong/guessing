@@ -17,72 +17,62 @@
 </head>
 <body>
 
-<div class="container mt-5">
-    <h1 class="text-center mb-5">Game đoán số</h1>
-    <% String contextPath = request.getContextPath(); %>
+<div class="container">
+    <div class="row mt-5">
+        <div class="col-md-5 m-auto mt-5">
+            <h3 class="text-center">GAME ĐOÁN SỐ</h3>
+            <div class="p-4 border mt-4">
 
+                <% String contextPath = request.getContextPath(); %>
+                <c:if test="${not empty name}">
+                    <c:set var="stringDisabled" value="readonly"/>
+                    <c:set var="stringValue" value="${name}"/>
+                </c:if>
 
-    <form action="<%=contextPath%>/guessgame" method="POST">
-        <div class="form-group">
-            <label for="name">Tên người chơi:</label>
-            <input type="text" class="form-control" id="name" name="name"
-                   required>
+                <form action="<%=contextPath%>/guessgame" method="post">
+                    <div class="form-group">
+                        <label>Họ tên người chơi</label>
+                        <input type="text" class="form-control" name="name" value="${stringValue}" ${stringDisabled}>
+                    </div>
+                    <div class="form-group">
+                        <label>Bạn hãy đoán 1 con số</label>
+                        <input type="number" class="form-control" name="number">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Play</button>
+                </form>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="guess">Số của bạn:</label>
-            <input type="number" class="form-control" id="guess" name="guess"
-                   min="1" max="10" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Đoán</button>
-    </form>
-    <h2>${hint}</h2>
-    <h2>${messsage}</h2>
-    <h2 class="mt-5">Danh sách người chơi</h2>
-    <table class="table">
+    </div>
+
+    <h3 class="mt-5 text-center">${message}</h3>
+    <table class="mt-5 table">
         <thead>
         <tr>
-            <th scope="col">#</th>
+            <th scope="col">STT</th>
             <th scope="col">Tên người chơi</th>
+            <th scope="col">Số dự đoán</th>
+            <th scope="col">Số hệ thống</th>
             <th scope="col">Số lần đoán</th>
         </tr>
         </thead>
+
         <tbody>
-<%--        <c:forEach var="player" items="${players}">--%>
-        <tr>
-<%--            <th scope="row">1</th>--%>
-<%--            <td>${player.name}</td>--%>
-<%--            <td>${player.getGuess()}</td>--%>
-        </tr>
-<%--        </c:forEach>--%>
+        <c:forEach items="${PlayerList}" var="item" varStatus="loop">
+            <tr>
+                <th scope="row">${loop.index + 1}</th>
+                <td>${item.getName()}</td>
+                <td>${item.getAnswer()}</td>
+                <td>${item.getGuess()}</td>
+                <td>${item.getCount()}</td>
+            </tr>
+        </c:forEach>
+
+
         </tbody>
     </table>
+
 </div>
-<%--<div class="container">--%>
-<%--    <div class="row mt-5">--%>
-<%--        <div class="col-md-5 m-auto mt-5">--%>
-<%--            <h3 class="text-center">ĐĂNG NHẬP HỆ THỐNG</h3>--%>
-<%--            <div class="p-4 border mt-4">--%>
-
-<%--                <% String contextPath = request.getContextPath(); %>--%>
-
-<%--                <form action="<%=contextPath%>/login" method="post">--%>
-<%--                    <div class="form-group">--%>
-<%--                        <label>Email</label>--%>
-<%--                        <input type="email" class="form-control" name="username">--%>
-<%--                    </div>--%>
-<%--                    <div class="form-group">--%>
-<%--                        <label>Mật khẩu</label>--%>
-<%--                        <input type="password" class="form-control" name="password">--%>
-<%--                    </div>--%>
-<%--                    <button type="submit" class="btn btn-primary">Đăng nhập</button>--%>
-<%--                </form>--%>
-<%--            </div>--%>
-<%--        </div>--%>
-<%--    </div>--%>
-<%--</div>--%>
-
-
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>

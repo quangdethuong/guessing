@@ -1,74 +1,85 @@
 import model.Player;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
-import javax.servlet.annotation.*;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
+import java.util.Random;
 
-@WebServlet(name = "GuessServlet", value = "/guessgame")
+@WebServlet(name = "guessServlet", urlPatterns = {"/guessgame"})
 public class GuessServlet extends HttpServlet {
-    private int num = 0;
-
-    private static final int MIN_NUMBER = 1;
-    private static final int MAX_NUMBER = 10;
-
-    private static int answer;
-    private static List<Player> players = new ArrayList<>();
-    private static int currentPlayerIndex = 0;
-
+    ArrayList<Player> PlayerList = new ArrayList<>();
+    Random random = new Random();
+    int randomnumber = random.nextInt(1000) + 1;
+    int count = 1;
     @Override
-    public void init() throws ServletException {
-        super.init();
-        answer = (int) (Math.random() * (MAX_NUMBER - MIN_NUMBER + 1)) + MIN_NUMBER;
-        players.clear();
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.getRequestDispatcher("guessgame.jsp").forward(req, resp);
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("guessgame.jsp").forward(request, response);
-    }
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int guess = Integer.parseInt(request.getParameter("guess"));
-        System.out.println(guess);
-        System.out.println(answer);
-        String name = request.getParameter("name");
+        req.setCharacterEncoding("utf-8");
+        String name = req.getParameter("name");
+        System.out.println("name: " + name);
+        String strNumber = req.getParameter("number");
+        String message = null;
+        boolean isfinish = false;
 
+        System.out.println("randomnumber: " + randomnumber);
+        System.out.println("isfinish: " + isfinish);
 
-        Player player = new Player();
-        if (guess == answer) {
-            String congra = "Chuc mung ban da doan trung";
-            request.setAttribute("messsage", congra);
-            Comparator<Player> comp = new Comparator<Player>() {
-                @Override
-                public int compare(Player o1, Player o2) {
-                    if (o1.getGuess() == o2.getGuess())
-                        return 0;
-                    if (o1.getGuess() > o2.getGuess())
-                        return 1;
-                    else
-                        return -1;
-                }
+        System.out.println("count: " + count);
+        int number = 0;
+        if (!strNumber.isEmpty()) {
+            number = Integer.parseInt(strNumber);
+            if (number > 1000) {
+                message = "Vui lòng nhập số từ 1 đến 1000";
+                req.setAttribute("message", message);
+                req.getRequestDispatcher("welcome.jsp").forward(req, resp);
+                return;
             };
-            Collections.sort(players, comp);
-
-        } else {
-//            num = player.incrementGuesses();
-            String hint = (guess < answer) ? "Số vừa đoán nhỏ hơn đáp án!" : "Số vừa đoán lớn hơn đáp án!";
-            request.setAttribute("hint", hint);
-
         }
-
-
-
-        request.setAttribute("players", players);
-        request.getRequestDispatcher("guessgame.jsp").forward(request, response);
+        if (number == randomnumber) {
+            message = "Xin chúc mừng bạn đã đoán trúng";
+            Player player = new Player();
+            player.setName(name);
+            player.setAnswer(number);
+            player.setCount(count);
+            player.setGuess(randomnumber);
+            PlayerList.add(player);
+            sort(PlayerList);
+            isfinish = true;
+            randomnumber = random.nextInt(1000) + 1;
+            count = 1;
+            name = null;
+        } else if (number > randomnumber) {
+            message = "Số bạn đoán lớn hơn số hệ thống";
+            count++;
+            req.setAttribute("name", name);
+        } else {
+            message = "Số bạn đoán nhỏ hơn số hệ thống";
+            count++;
+            System.out.println("name: " + name);
+            req.setAttribute("name", name);
+        }
+        req.setAttribute("message", message);
+        req.setAttribute("PlayerList", PlayerList);
+        req.getRequestDispatcher("guessgame.jsp").forward(req, resp);
     }
 
-
+    public void sort(ArrayList<Player> usersList) {
+        Collections.sort(usersList, new Comparator<Player>() {
+            @Override
+            public int compare(Player u1, Player u2) {
+                return u1.getGuess() - u2.getGuess();
+            }
+        });
+    }
 }
