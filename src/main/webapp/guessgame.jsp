@@ -1,7 +1,6 @@
-
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page isELIgnored="false" %>
-<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <%--
@@ -24,7 +23,8 @@
             <div class="p-4 border mt-4">
 
                 <% String contextPath = request.getContextPath(); %>
-                <c:if test="${not empty name}">
+
+                <c:if test="${not empty name && not empty message}">
                     <c:set var="stringDisabled" value="readonly"/>
                     <c:set var="stringValue" value="${name}"/>
                 </c:if>
@@ -32,14 +32,18 @@
                 <form action="<%=contextPath%>/guessgame" method="post">
                     <div class="form-group">
                         <label>Họ tên người chơi</label>
-                        <input type="text" class="form-control" name="name" value="${stringValue}" ${stringDisabled}>
+                        <input type="text" class="form-control" name="name" value="${stringValue}" ${stringDisabled}
+                               required>
                     </div>
                     <div class="form-group">
                         <label>Bạn hãy đoán 1 con số</label>
                         <input type="number" class="form-control" name="number">
                     </div>
-
                     <button type="submit" class="btn btn-primary">Play</button>
+                </form>
+                <form class="d-flex justify-content-end" style="margin-top: -36px;" action="<%=contextPath%>/guessgame" method="get">
+                    <input type="hidden" name="newGame" value="true">
+                    <button type="submit" class="btn btn-secondary ">NEW GANE</button>
                 </form>
             </div>
         </div>

@@ -1,32 +1,26 @@
 import model.Player;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import javax.servlet.annotation.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
 
-@WebServlet(name = "guessServlet", urlPatterns = {"/guessgame"})
-public class GuessServlet extends HttpServlet {
+@WebServlet(name = "NewGameServlet", value = "/NewGameServlet")
+public class NewGameServlet extends HttpServlet {
     ArrayList<Player> PlayerList = new ArrayList<>();
     Random random = new Random();
     int randomnumber = random.nextInt(1000) + 1;
     int count = 1;
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String newGame = req.getParameter("newGame");
-        if (!PlayerList.isEmpty() && newGame.equals("true")){
-            req.removeAttribute("PlayerList");
-            req.removeAttribute("message");
+        if (PlayerList != null)
+        {
             PlayerList.clear();
-            resp.sendRedirect("guessgame.jsp");
-        }
-//             req.getRequestDispatcher("guessgame.jsp").forward(req, resp);
+        }        req.getRequestDispatcher("guessgame.jsp").forward(req, resp);
     }
 
     @Override
@@ -46,10 +40,10 @@ public class GuessServlet extends HttpServlet {
         int number = 0;
         if (!strNumber.isEmpty()) {
             number = Integer.parseInt(strNumber);
-            if (number > 1000 && name != null) {
+            if (number > 1000) {
                 message = "Vui lòng nhập số từ 1 đến 1000";
                 req.setAttribute("message", message);
-                req.getRequestDispatcher("guessgame.jsp").forward(req, resp);
+                req.getRequestDispatcher("welcome.jsp").forward(req, resp);
                 return;
             };
         }
