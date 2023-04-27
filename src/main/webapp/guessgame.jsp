@@ -29,6 +29,7 @@
                     <c:set var="stringValue" value="${name}"/>
                 </c:if>
 
+
                 <form action="<%=contextPath%>/guessgame" method="post">
                     <div class="form-group">
                         <label>Họ tên người chơi</label>
@@ -37,13 +38,17 @@
                     </div>
                     <div class="form-group">
                         <label>Bạn hãy đoán 1 con số</label>
-                        <input type="number" class="form-control" name="number">
+                        <input type="number" class="form-control" name="number" required>
                     </div>
                     <button type="submit" class="btn btn-primary">Play</button>
+
                 </form>
-                <form class="d-flex justify-content-end" style="margin-top: -36px;" action="<%=contextPath%>/guessgame" method="get">
+                <form class="d-flex justify-content-end" style="margin-top: -36px;" action="<%=contextPath%>/guessgame"
+                      method="get">
                     <input type="hidden" name="newGame" value="true">
+
                     <button type="submit" class="btn btn-secondary ">NEW GANE</button>
+
                 </form>
             </div>
         </div>
