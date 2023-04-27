@@ -12,13 +12,13 @@ import java.util.*;
 public class GuessServlet extends HttpServlet {
     List<Player> PlayerList = new ArrayList<>();
     Random random = new Random();
-    int randomnumber = 16;
+    int randomnumber = random.nextInt(1000) + 1;
     int count = 1;
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String newGame = req.getParameter("newGame");
         if ("true".equals(newGame)) {
-            randomnumber = 11;
+            randomnumber = random.nextInt(1000) + 1;
             count = 1;
             PlayerList.clear();
             req.getRequestDispatcher("guessgame.jsp").forward(req, resp);
